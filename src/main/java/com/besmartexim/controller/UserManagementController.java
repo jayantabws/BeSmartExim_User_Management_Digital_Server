@@ -165,13 +165,34 @@ private static final Logger logger = LoggerFactory.getLogger(UserManagementContr
 		
 	}
 	
+//	@RequestMapping(value = "/user/loginlist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity loginList(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+//		logger.info("accessedBy = "+accessedBy);
+//			
+//		LoginListResponse loginListRespose =userManagementService.loginList(userId,uplineId,accessedBy);
+//		
+//		return new ResponseEntity<>(loginListRespose, HttpStatus.OK);
+//		
+//	}
+	
+	
 	@RequestMapping(value = "/user/loginlist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity loginList(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+	public ResponseEntity loginList(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestParam (defaultValue = "0") int pageNumber, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("accessedBy = "+accessedBy);
 			
-		LoginListResponse loginListRespose =userManagementService.loginList(userId,uplineId,accessedBy);
+		LoginListResponse loginListRespose =userManagementService.loginList(userId,uplineId,pageNumber,accessedBy);
 		
 		return new ResponseEntity<>(loginListRespose, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/user/loginlistcount", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity loginListCount(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+		logger.info("accessedBy = "+accessedBy);
+			
+		Long count =userManagementService.loginListCount(userId,uplineId,accessedBy);
+		
+		return new ResponseEntity<>(count, HttpStatus.OK);
 		
 	}
 	

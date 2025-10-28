@@ -2,7 +2,6 @@ package com.besmartexim.service;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -26,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,7 +43,6 @@ import com.besmartexim.database.entity.UserSubscription;
 import com.besmartexim.database.repository.LoginDetailsRepository;
 import com.besmartexim.database.repository.UserRepository;
 import com.besmartexim.database.repository.UserSubscriptionRepository;
-import com.besmartexim.dto.request.LoginDetailsRequest;
 import com.besmartexim.dto.request.LoginRequest;
 import com.besmartexim.dto.request.LogoutRequest;
 import com.besmartexim.dto.request.UserRequest;
@@ -57,8 +58,8 @@ import com.besmartexim.dto.response.UserListResponse;
 import com.besmartexim.dto.response.UserSubscriptionDetails;
 import com.besmartexim.dto.response.UserSubscriptionList;
 import com.besmartexim.exception.ServiceException;
-import com.besmartexim.utility.QueryConstant;
 import com.besmartexim.utility.AppConstant;
+import com.besmartexim.utility.QueryConstant;
 
 
 @Service
@@ -786,23 +787,70 @@ public class UserManagementService {
 		
 	}
 
-	public LoginListResponse loginList(Long userId,Long uplineId, Long accessedBy) throws Exception{
+//	public LoginListResponse loginList(Long userId,Long uplineId, Long accessedBy) throws Exception{
+//		
+//		LoginListResponse loginListResponse = new LoginListResponse();
+//		
+//		List<LoginDetails> srcList = null;
+//		
+//		if(userId != null)
+//		{
+//			srcList = loginDetailsRepository.findByUserIdOrderByIdDesc(userId);
+//		}
+//		else if(uplineId != null)
+//		{
+//			srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId);
+//		}
+//		else
+//		{
+//			srcList = loginDetailsRepository.findAllByOrderByIdDesc();
+//		}
+//		
+//		List<LoginList> targetList = new ArrayList<LoginList>();
+//		
+//		if(null!=srcList) {
+//			
+//			for(LoginDetails loginDetails:srcList) {
+//				LoginList  loginList= new LoginList();
+//				BeanUtils.copyProperties(loginDetails, loginList);	
+//				
+//				User userEntity = userRepository.findById(loginDetails.getUserId()).get();
+//				
+//				loginList.setEmail(userEntity.getEmail());
+//				loginList.setMobile(userEntity.getMobile());
+//				loginList.setName(userEntity.getFirstname()+" "+userEntity.getLastname());
+//				
+//				
+//				targetList.add(loginList);
+//			}
+//		}
+//		
+//		loginListResponse.setLoginList(targetList);
+//		
+//		
+//		return loginListResponse;
+//		
+//	}
+	
+	
+public LoginListResponse loginList(Long userId,Long uplineId,int pageNumber, Long accessedBy) throws Exception{
 		
 		LoginListResponse loginListResponse = new LoginListResponse();
+		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 		
 		List<LoginDetails> srcList = null;
 		
 		if(userId != null)
 		{
-			srcList = loginDetailsRepository.findByUserIdOrderByIdDesc(userId);
+			srcList = loginDetailsRepository.findByUserId(userId, pageable);
 		}
 		else if(uplineId != null)
 		{
-			srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId);
+			srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId, pageable.getPageNumber(), pageable.getPageSize());
 		}
 		else
 		{
-			srcList = loginDetailsRepository.findAllByOrderByIdDesc();
+			srcList = loginDetailsRepository.findAll(pageable).getContent();
 		}
 		
 		List<LoginList> targetList = new ArrayList<LoginList>();
@@ -831,8 +879,24 @@ public class UserManagementService {
 		
 	}
 
+
+	public Long loginListCount(Long userId, Long uplineId, Long accessedBy) throws Exception {
+
+		Long count = null;
+
+		if (userId != null) {
+			count = loginDetailsRepository.countByUserId(userId);
+		} else if (uplineId != null) {
+			count = loginDetailsRepository.countByUplineIdCustom(uplineId);
+		} else {
+			count = loginDetailsRepository.count();
+		}
+
+		return count;
+
+	}
+
 	public UserSubscriptionList userSubscriptionList(Long userId, Long accessedBy) {
-		// TODO Auto-generated method stub
 		
 		UserSubscriptionList userSubscriptionList = new UserSubscriptionList();
 		
