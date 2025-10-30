@@ -177,7 +177,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserManagementContr
 	
 	
 	@RequestMapping(value = "/user/loginlist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity loginList(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestParam (defaultValue = "0") int pageNumber, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+	public ResponseEntity loginList(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestParam (defaultValue = "1") int pageNumber, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("accessedBy = "+accessedBy);
 			
 		LoginListResponse loginListRespose =userManagementService.loginList(userId,uplineId,pageNumber,accessedBy);
