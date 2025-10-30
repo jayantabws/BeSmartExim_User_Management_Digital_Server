@@ -836,6 +836,8 @@ public class UserManagementService {
 public LoginListResponse loginList(Long userId,Long uplineId,int pageNumber, Long accessedBy) throws Exception{
 		
 		LoginListResponse loginListResponse = new LoginListResponse();
+		if(pageNumber > 0)
+			pageNumber --;
 		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 		
 		List<LoginDetails> srcList = null;
