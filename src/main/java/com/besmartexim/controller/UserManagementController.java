@@ -31,7 +31,7 @@ import com.besmartexim.dto.response.UserDetailsResponse;
 import com.besmartexim.dto.response.UserListResponse;
 import com.besmartexim.dto.response.UserSubscriptionList;
 import com.besmartexim.service.UserManagementService;
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @RequestMapping(path="/user-management")
 public class UserManagementController {
@@ -187,7 +187,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserManagementContr
 	}
 	
 	@RequestMapping(value = "/user/loginlistcount", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity loginListCount(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+	public ResponseEntity<Long> loginListCount(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("accessedBy = "+accessedBy);
 			
 		Long count =userManagementService.loginListCount(userId,uplineId,accessedBy);
