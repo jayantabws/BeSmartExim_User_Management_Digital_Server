@@ -31,7 +31,7 @@ import com.besmartexim.dto.response.UserDetailsResponse;
 import com.besmartexim.dto.response.UserListResponse;
 import com.besmartexim.dto.response.UserSubscriptionList;
 import com.besmartexim.service.UserManagementService;
-//@CrossOrigin
+@CrossOrigin
 @RestController
 @RequestMapping(path="/user-management")
 public class UserManagementController {
