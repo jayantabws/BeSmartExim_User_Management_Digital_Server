@@ -833,7 +833,7 @@ public class UserManagementService {
 //	}
 	
 	
-public LoginListResponse loginList(Long userId,Long uplineId,int pageNumber, Long accessedBy) throws Exception{
+public LoginListResponse loginList(Long userId,Long uplineId,int pageNumber, Long accessedBy, Date fromDate, Date toDate) throws Exception{
 		
 		LoginListResponse loginListResponse = new LoginListResponse();
 		if(pageNumber > 0)
@@ -842,17 +842,23 @@ public LoginListResponse loginList(Long userId,Long uplineId,int pageNumber, Lon
 		
 		List<LoginDetails> srcList = null;
 		
-		if(userId != null)
-		{
-			srcList = loginDetailsRepository.findByUserId(userId, pageable);
+		if(userId != null) {
+			if(fromDate != null)
+				srcList = loginDetailsRepository.findByUserIdAndDateRange(userId, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);//D1
+			else
+				srcList = loginDetailsRepository.findByUserId(userId, pageable);
 		}
-		else if(uplineId != null)
-		{
-			srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId, pageable.getPageNumber(), pageable.getPageSize());
+		else if(uplineId != null) {
+			if(fromDate != null)
+				srcList = loginDetailsRepository.findByUplineIdAndDateRangeOrderByIdDesc(uplineId, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);//D2
+			else
+				srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId, pageable.getPageNumber(), pageable.getPageSize());
 		}
-		else
-		{
-			srcList = loginDetailsRepository.findAll(pageable).getContent();
+		else {
+			if(fromDate != null)
+				srcList = loginDetailsRepository.findAllByDateRange(pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);//D3
+			else
+				srcList = loginDetailsRepository.findAll(pageable).getContent();
 		}
 		
 		List<LoginList> targetList = new ArrayList<LoginList>();
@@ -882,16 +888,25 @@ public LoginListResponse loginList(Long userId,Long uplineId,int pageNumber, Lon
 	}
 
 
-	public Long loginListCount(Long userId, Long uplineId, Long accessedBy) throws Exception {
+	public Long loginListCount(Long userId, Long uplineId, Long accessedBy, Date fromDate, Date toDate) throws Exception {
 
 		Long count = null;
 
 		if (userId != null) {
-			count = loginDetailsRepository.countByUserId(userId);
+			if(fromDate != null)
+				count = loginDetailsRepository.countByUserIdAndDateRange(userId, fromDate, toDate);//DC1
+			else
+				count = loginDetailsRepository.countByUserId(userId);
 		} else if (uplineId != null) {
-			count = loginDetailsRepository.countByUplineIdCustom(uplineId);
+			if(fromDate != null)
+				count = loginDetailsRepository.countByUplineIdAndDateRange(uplineId, fromDate, toDate);//DC2
+			else
+				count = loginDetailsRepository.countByUplineIdCustom(uplineId);
 		} else {
-			count = loginDetailsRepository.count();
+			if(fromDate != null)
+				count = loginDetailsRepository.countByDateRange(fromDate, toDate);//DC3
+			else
+				count = loginDetailsRepository.count();
 		}
 
 		return count;
