@@ -2,6 +2,7 @@ package com.besmartexim.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -11,16 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.besmartexim.dto.request.LoginDetailsRequest;
+import org.springframework.web.bind.annotation.*;
 import com.besmartexim.dto.request.LoginRequest;
 import com.besmartexim.dto.request.LogoutRequest;
 import com.besmartexim.dto.request.UserRequest;
@@ -34,9 +26,10 @@ import com.besmartexim.dto.response.UserDetailsResponse;
 import com.besmartexim.dto.response.UserListResponse;
 import com.besmartexim.dto.response.UserSubscriptionList;
 import com.besmartexim.service.UserManagementService;
+
 @CrossOrigin
 @RestController
-@RequestMapping(path="/user-management")
+@RequestMapping(path = "/user-management")
 public class UserManagementController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserManagementController.class);
@@ -87,9 +80,9 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/deleteuser/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity userDelete(@RequestBody UserRequest userRequest, @PathVariable Long userId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@PutMapping(value = "/deleteuser/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> userDelete(@RequestBody UserRequest userRequest, @PathVariable Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		userManagementService.userDelete(userRequest, userId, accessedBy);
@@ -98,9 +91,9 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user/details", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity userDetails(@RequestParam Long userId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@GetMapping(value = "/user/details", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserDetailsResponse> userDetails(@RequestParam Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		UserDetailsResponse userDetailsResponse = userManagementService.userDetails(userId);
@@ -109,12 +102,11 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity userList(@RequestParam(value = "uplineId", required = false) Long uplineId,
-			@RequestParam(value = "userType", required = false) String userType,
-			@RequestParam(value = "isExpired", required = false) String isExpired,
-			@RequestParam(value = "isActive", required = false) String isActive,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@GetMapping(value = "/user/list", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserListResponse> userList(@RequestParam(required = false) Long uplineId,
+			@RequestParam(required = false) String userType, @RequestParam(required = false) String isExpired,
+			@RequestParam(required = false) String isActive, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		UserListResponse userListResponse = userManagementService.userList(uplineId, userType, accessedBy, isExpired,
@@ -124,9 +116,9 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user-subscription/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity createUserSubscription(@RequestBody @Valid UserSubscriptionRequest userSubscriptionRequest,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@PostMapping(value = "/user-subscription/create", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createUserSubscription(@RequestBody @Valid UserSubscriptionRequest userSubscriptionRequest,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		userManagementService.createUserSubscription(userSubscriptionRequest, accessedBy);
@@ -135,11 +127,10 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user-subscription/update/{userSubscriptionId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity updateUserSubscription(
+	@PutMapping(value = "/user-subscription/update/{userSubscriptionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateUserSubscription(
 			@RequestBody UserSubscriptionDetailsRequest userSubscriptionDetailsRequest,
-			@PathVariable Long userSubscriptionId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+			@PathVariable Long userSubscriptionId, @RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		userManagementService.updateUserSubscription(userSubscriptionDetailsRequest, userSubscriptionId, accessedBy);
@@ -148,9 +139,9 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user-subscription/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity listUserSubscription(@RequestParam(value = "userId", required = true) Long userId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@GetMapping(value = "/user-subscription/list", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserSubscriptionList> listUserSubscription(@RequestParam(required = true) Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		UserSubscriptionList userSubscriptionList = userManagementService.userSubscriptionList(userId, accessedBy);
@@ -159,9 +150,9 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user-subscription/activelist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity activeListUserSubscription(@RequestParam(value = "userId", required = true) Long userId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@GetMapping(value = "/user-subscription/activelist", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserSubscriptionList> activeListUserSubscription(@RequestParam(required = true) Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		UserSubscriptionList userSubscriptionList = userManagementService.activeUserSubscriptionList(userId,
@@ -171,9 +162,9 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/logout", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity userLogout(@RequestBody @Valid LogoutRequest logoutRequest,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@PutMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> userLogout(@RequestBody @Valid LogoutRequest logoutRequest,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		userManagementService.userLogout(logoutRequest, accessedBy);
@@ -192,48 +183,50 @@ public class UserManagementController {
 //		
 //	}
 
-	@RequestMapping(value = "/user/loginlist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity loginList(@RequestParam(required = false) Long userId,
+	@GetMapping(value = "/user/loginlist", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LoginListResponse> loginList(@RequestParam(required = false) Long userId,
 			@RequestParam(required = false) Long uplineId, @RequestParam(defaultValue = "1") int pageNumber,
-			@RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+			@RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
-		
+
 		Date fd = null, td = null;
-		
-		if(fromDate != null && fromDate != "") {
+
+		if (fromDate != null && fromDate != "") {
 			fd = new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);
 		}
-		if(toDate != null && toDate != "") {
+		if (toDate != null && toDate != "") {
 			toDate = toDate + " 23:59:59.999";
 			td = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(toDate);
 		}
-		if(td == null && fd != null) {
+		if (td == null && fd != null) {
 			td = new Date();
 		}
 
-		LoginListResponse loginListRespose = userManagementService.loginList(userId, uplineId, pageNumber, accessedBy, fd, td);
+		LoginListResponse loginListRespose = userManagementService.loginList(userId, uplineId, pageNumber, accessedBy,
+				fd, td);
 
 		return new ResponseEntity<>(loginListRespose, HttpStatus.OK);
 
 	}
 
-	@RequestMapping(value = "/user/loginlistcount", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/user/loginlistcount", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> loginListCount(@RequestParam(required = false) Long userId,
-			@RequestParam(required = false) Long uplineId,@RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+			@RequestParam(required = false) Long uplineId, @RequestParam(required = false) String fromDate,
+			@RequestParam(required = false) String toDate, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
-		
+
 		Date fd = null, td = null;
-		
-		if(fromDate != null && fromDate != "") {
+
+		if (fromDate != null && fromDate != "") {
 			fd = new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);
 		}
-		if(toDate != null && toDate != "") {
+		if (toDate != null && toDate != "") {
 			toDate = toDate + " 23:59:59.999";
 			td = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(toDate);
 		}
-		if(td == null && fd != null) {
+		if (td == null && fd != null) {
 			td = new Date();
 		}
 
@@ -243,15 +236,35 @@ public class UserManagementController {
 
 	}
 
-	@RequestMapping(value = "/user/loginstatus", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity loginStatus(@RequestParam(required = true) Long loginId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@GetMapping(value = "/user/loginstatus", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LoginList> loginStatus(@RequestParam(required = true) Long loginId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		LoginList loginList = userManagementService.loginStatus(loginId, accessedBy);
 
 		return new ResponseEntity<>(loginList, HttpStatus.OK);
 
+	}
+
+	@GetMapping(value = "/loginusers", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<LoginList>> currentloginusers(@RequestHeader(required = true) Long accessedBy)
+			throws Exception {
+		logger.info("Request : /user-management/loginusers");
+
+		List<LoginList> loginList = userManagementService.currentLoginUsers(accessedBy);
+
+		return new ResponseEntity<>(loginList, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/loginusercount", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Long> currentloginuserCounts(@RequestHeader(required = true) Long accessedBy)
+			throws Exception {
+		logger.info("Request : /user-management/loginusercount");
+
+		Long count = userManagementService.currentLoginUserCount(accessedBy);
+
+		return new ResponseEntity<>(count, HttpStatus.OK);
 	}
 
 }

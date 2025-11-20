@@ -57,4 +57,10 @@ public interface LoginDetailsRepository extends JpaRepository<LoginDetails, Long
 	@Query(nativeQuery = true, value="SELECT count(*) FROM login_details where login_time between :fromDate and :toDate")
 	Long countByDateRange(Date fromDate, Date toDate);//DC3
 
+	@Query(nativeQuery = true, value = "select * from login_details where login_time between :fromDate and :toDate and logout_time is null order by login_time desc")
+	List<LoginDetails> allLoginUsers(Date fromDate, Date toDate);
+	
+	
+	@Query(nativeQuery = true, value = "select count(*) from login_details where login_time between :fromDate and :toDate and logout_time is null")
+	Long countAllLoginUsers(Date fromDate, Date toDate);
 }
