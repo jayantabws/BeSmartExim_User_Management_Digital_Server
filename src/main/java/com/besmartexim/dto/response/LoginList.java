@@ -9,6 +9,7 @@ public class LoginList {
 	private String name;
 	private String email;
 	private String mobile;
+	private String companyName;
 	private String sessionId;
 	private String ipAddress;
 	private Date loginTime;
@@ -67,6 +68,12 @@ public class LoginList {
 	}
 	public void setLogoutTime(Date logoutTime) {
 		this.logoutTime = logoutTime;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 	
 	

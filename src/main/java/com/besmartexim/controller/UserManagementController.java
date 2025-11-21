@@ -37,7 +37,7 @@ public class UserManagementController {
 	@Autowired
 	private UserManagementService userManagementService;
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> userLogin(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
 		logger.info("Request : /user-management/login");
 		LoginResponse loginResponse = userManagementService.userLogin(loginRequest);
@@ -45,7 +45,7 @@ public class UserManagementController {
 		return new ResponseEntity<>(loginResponse, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/forgotpassword", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> forgotPassword(@RequestParam(required = true) String userEmail) throws Exception {
 		logger.info("Request : /user-management/forgotpassword");
 		ForgotPasswordResponse response = userManagementService.forgotPassword(userEmail);
@@ -53,7 +53,7 @@ public class UserManagementController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/adminlogin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/adminlogin", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> adminLogin(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
 		logger.info("Request : /user-management/adminlogin");
 		LoginResponse loginResponse = userManagementService.adminLogin(loginRequest);
@@ -61,17 +61,17 @@ public class UserManagementController {
 		return new ResponseEntity<>(loginResponse, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> userCreate(@RequestBody UserRequest userRequest,
-			@RequestHeader(value = "accessedBy", required = false) Long accessedBy) throws Exception {
+			@RequestHeader(required = false) Long accessedBy) throws Exception {
 		logger.info("Request : /user-management/user");
 		userManagementService.userCreate(userRequest, accessedBy);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity userUpdate(@RequestBody UserRequest userRequest, @PathVariable Long userId,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+	@PutMapping(value = "/user/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> userUpdate(@RequestBody UserRequest userRequest, @PathVariable Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		userManagementService.userUpdate(userRequest, userId, accessedBy);
@@ -173,15 +173,6 @@ public class UserManagementController {
 
 	}
 
-//	@RequestMapping(value = "/user/loginlist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity loginList(@RequestParam(required=false) Long userId , @RequestParam (required=false) Long uplineId, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
-//		logger.info("accessedBy = "+accessedBy);
-//			
-//		LoginListResponse loginListRespose =userManagementService.loginList(userId,uplineId,accessedBy);
-//		
-//		return new ResponseEntity<>(loginListRespose, HttpStatus.OK);
-//		
-//	}
 
 	@GetMapping(value = "/user/loginlist", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LoginListResponse> loginList(@RequestParam(required = false) Long userId,

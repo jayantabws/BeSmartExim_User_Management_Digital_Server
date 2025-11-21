@@ -221,6 +221,7 @@ public class UserManagementService {
 		return forgotPasswordResponse;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean sendEmail(String emailId) {
 		try {
 			Properties props = new Properties();
@@ -704,6 +705,7 @@ public class UserManagementService {
 
 			User userEntity = userRepository.findById(userId).get();
 
+			@SuppressWarnings("unused")
 			UserSubscriptionList userSubscriptionList = new UserSubscriptionList();
 
 			List<UserSubscription> srcList = userSubscriptionRepository
@@ -722,6 +724,7 @@ public class UserManagementService {
 			msgBody = msgBody + "<b>Username:</b> " + userEntity.getEmail() + "<br>";
 			msgBody = msgBody + "<b>Password:</b> " + userEntity.getPassword() + "<br>";
 
+			@SuppressWarnings("unused")
 			List<UserSubscriptionDetails> targetList = new ArrayList<UserSubscriptionDetails>();
 
 			if (null != srcList) {
@@ -941,7 +944,7 @@ public class UserManagementService {
 		return userSubscriptionList;
 	}
 
-	private List convertStringToList(String s1) {
+	private List<String> convertStringToList(String s1) {
 		if (s1 != null) {
 			// String s1="[a,b,c,d]";
 			String replace = s1.replace("[", "");
@@ -1058,6 +1061,7 @@ public class UserManagementService {
 				user1.setName(user.getFirstname() + " " + user.getLastname());
 				user1.setEmail(user.getEmail());
 				user1.setMobile(user.getMobile());
+				user1.setCompanyName(user.getCompanyName());
 				user1.setSessionId(loginuser.getSessionId());
 				user1.setIpAddress(loginuser.getIpAddress());
 				user1.setLoginTime(loginuser.getLoginTime());
