@@ -843,8 +843,6 @@ public class UserManagementService {
 			Date toDate) throws Exception {
 
 		LoginListResponse loginListResponse = new LoginListResponse();
-		if (pageNumber > 0)
-			pageNumber--;
 		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 
 		List<LoginDetails> srcList = null;

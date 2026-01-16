@@ -176,7 +176,7 @@ public class UserManagementController {
 
 	@GetMapping(value = "/user/loginlist", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LoginListResponse> loginList(@RequestParam(required = false) Long userId,
-			@RequestParam(required = false) Long uplineId, @RequestParam(defaultValue = "1") int pageNumber,
+			@RequestParam(required = false) Long uplineId, @RequestParam(defaultValue = "0") int pageNumber,
 			@RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate,
 			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
