@@ -20,6 +20,7 @@ public class UserSubscriptionDetailsRequest {
 	private Date accountExpireDate;
 	private String allowedChapter;
 	private String dataAccessUpto;
+	private String indepthAccess;
 	private ArrayList<String> countryId;
 	
 	
@@ -113,6 +114,12 @@ public class UserSubscriptionDetailsRequest {
 	}
 	public void setDataAccessUpto(String dataAccessUpto) {
 		this.dataAccessUpto = dataAccessUpto;
+	}
+	public String getIndepthAccess() {
+		return indepthAccess;
+	}
+	public void setIndepthAccess(String indepthAccess) {
+		this.indepthAccess = indepthAccess;
 	}
 	
 	

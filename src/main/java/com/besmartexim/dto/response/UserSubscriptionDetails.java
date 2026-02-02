@@ -81,6 +81,8 @@ public class UserSubscriptionDetails {
 	private String allowedChapter;
 	
 	private String dataAccessUpto;
+	
+	private String indepthAccess;
 
 
 	public Long getId() {
@@ -350,6 +352,16 @@ public class UserSubscriptionDetails {
 
 	public void setDataAccessUpto(String dataAccessUpto) {
 		this.dataAccessUpto = dataAccessUpto;
+	}
+
+
+	public String getIndepthAccess() {
+		return indepthAccess;
+	}
+
+
+	public void setIndepthAccess(String indepthAccess) {
+		this.indepthAccess = indepthAccess;
 	}	
 	
 	

@@ -577,6 +577,7 @@ public class UserManagementService {
 
 				userSubscriptionEntity.setModifiedBy(accessedBy);
 				userSubscriptionEntity.setModifiedDate(new Date());
+				userSubscriptionEntity.setIndepthAccess(userSubscription.getIndepthAccess());
 				userSubscriptionRepository.save(userSubscriptionEntity);
 
 			}
@@ -633,6 +634,7 @@ public class UserManagementService {
 			userSubscriptionEntity.setIsActive("Y");
 		userSubscriptionEntity.setCreatedBy(accessedBy);
 		userSubscriptionEntity.setCreatedDate(new Date());
+		userSubscriptionEntity.setIndepthAccess(subscription.getIndepthAccess());
 		userSubscriptionRepository.save(userSubscriptionEntity);
 
 		if (null == srcList || srcList.isEmpty()) {
@@ -1018,6 +1020,8 @@ public class UserManagementService {
 				userSubscriptionEntity.setDataAccessUpto(userSubscriptionDetailsRequest.getDataAccessUpto());
 			if (null != userSubscriptionDetailsRequest.getCountryId())
 				userSubscriptionEntity.setCountries(userSubscriptionDetailsRequest.getCountryId().toString());
+			if (null != userSubscriptionDetailsRequest.getIndepthAccess())
+				userSubscriptionEntity.setIndepthAccess(userSubscriptionDetailsRequest.getIndepthAccess());
 
 			userSubscriptionEntity.setModifiedDate(new Date());
 			userSubscriptionEntity.setModifiedBy(accessedBy);

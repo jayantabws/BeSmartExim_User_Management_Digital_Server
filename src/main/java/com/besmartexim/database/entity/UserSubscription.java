@@ -1,6 +1,5 @@
 package com.besmartexim.database.entity;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -94,6 +93,9 @@ public class UserSubscription {
 	
 	@Column(name = "data_access_upto")
 	private String dataAccessUpto;
+	
+	@Column(name = "user_indepth_access")
+	private String indepthAccess;
 
 	public Long getId() {
 		return id;
@@ -309,6 +311,14 @@ public class UserSubscription {
 
 	public void setDataAccessUpto(String dataAccessUpto) {
 		this.dataAccessUpto = dataAccessUpto;
+	}
+
+	public String getIndepthAccess() {
+		return indepthAccess;
+	}
+
+	public void setIndepthAccess(String indepthAccess) {
+		this.indepthAccess = indepthAccess;
 	}
 	
 	
