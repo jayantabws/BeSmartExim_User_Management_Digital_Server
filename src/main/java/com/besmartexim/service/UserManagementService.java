@@ -960,7 +960,7 @@ public class UserManagementService {
 	}
 
 	public UserSubscriptionList activeUserSubscriptionList(Long userId, Long accessedBy) {
-		// TODO Auto-generated method stub
+		
 		UserSubscriptionList userSubscriptionList = new UserSubscriptionList();
 
 		List<UserSubscription> srcList = userSubscriptionRepository.findAllByUserIdAndIsActiveOrderByIdDesc(userId,
