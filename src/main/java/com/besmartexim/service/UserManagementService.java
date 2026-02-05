@@ -413,6 +413,8 @@ public class UserManagementService {
 				userEntity.setFirstname(request.getFirstname());
 			if (null != request.getLastname())
 				userEntity.setLastname(request.getLastname());
+			if (null != request.getEmail())
+				userEntity.setEmail(request.getEmail());
 			if (null != request.getCompanyName())
 				userEntity.setCompanyName(request.getCompanyName());
 			if (null != request.getUserType())
@@ -984,50 +986,58 @@ public class UserManagementService {
 		return userSubscriptionList;
 	}
 
-	public void updateUserSubscription(UserSubscriptionDetailsRequest userSubscriptionDetailsRequest,
-			Long userSubscriptionId, Long accessedBy) throws Exception {
+	public String updateUserSubscription(UserSubscriptionDetailsRequest userSubscriptionDetailsRequest,
+			Long userSubscriptionId, Long accessedBy) {
+			String msg = null;
+		try {
+			
+			UserSubscription userSubscriptionEntity = userSubscriptionRepository.findById(userSubscriptionId).get();
+			if (userSubscriptionEntity == null) {
+				throw new ServiceException("Incorrect User Subscription");
+			} else {
 
-		UserSubscription userSubscriptionEntity = userSubscriptionRepository.findById(userSubscriptionId).get();
-		if (userSubscriptionEntity == null) {
-			throw new ServiceException("Incorrect User Subscription");
-		} else {
+				if (null != userSubscriptionDetailsRequest.getDownloadLimit())
+					userSubscriptionEntity.setDownloadLimit(userSubscriptionDetailsRequest.getDownloadLimit());
+				if (null != userSubscriptionDetailsRequest.getTotalWorkspace())
+					userSubscriptionEntity.setTotalWorkspace(userSubscriptionDetailsRequest.getTotalWorkspace());
+				if (null != userSubscriptionDetailsRequest.getSubUserCount())
+					userSubscriptionEntity.setSubUserCount(userSubscriptionDetailsRequest.getSubUserCount());
+				if (null != userSubscriptionDetailsRequest.getDataAccessInMonth())
+					userSubscriptionEntity.setDataAccessInMonth(userSubscriptionDetailsRequest.getDataAccessInMonth());
+				if (null != userSubscriptionDetailsRequest.getDownloadPerDay())
+					userSubscriptionEntity.setDownloadPerDay(userSubscriptionDetailsRequest.getDownloadPerDay());
+				if (null != userSubscriptionDetailsRequest.getSupport())
+					userSubscriptionEntity.setSupport(userSubscriptionDetailsRequest.getSupport());
+				if (null != userSubscriptionDetailsRequest.getTicketManager())
+					userSubscriptionEntity.setTicketManager(userSubscriptionDetailsRequest.getTicketManager());
+				if (null != userSubscriptionDetailsRequest.getRecordsPerWorkspace())
+					userSubscriptionEntity.setRecordsPerWorkspace(userSubscriptionDetailsRequest.getRecordsPerWorkspace());
+				if (null != userSubscriptionDetailsRequest.getDisplayFields())
+					userSubscriptionEntity.setDisplayFields(userSubscriptionDetailsRequest.getDisplayFields());
+				if (null != userSubscriptionDetailsRequest.getQueryPerDay())
+					userSubscriptionEntity.setQueryPerDay(userSubscriptionDetailsRequest.getQueryPerDay());
+				if (null != userSubscriptionDetailsRequest.getAccountExpireDate())
+					userSubscriptionEntity.setAccountExpireDate(userSubscriptionDetailsRequest.getAccountExpireDate());
+				if (null != userSubscriptionDetailsRequest.getAllowedChapter())
+					userSubscriptionEntity.setAllowedChapter(userSubscriptionDetailsRequest.getAllowedChapter());
+				if (null != userSubscriptionDetailsRequest.getDataAccessUpto())
+					userSubscriptionEntity.setDataAccessUpto(userSubscriptionDetailsRequest.getDataAccessUpto());
+				if (null != userSubscriptionDetailsRequest.getCountryId())
+					userSubscriptionEntity.setCountries(userSubscriptionDetailsRequest.getCountryId().toString());
+				if (null != userSubscriptionDetailsRequest.getIndepthAccess())
+					userSubscriptionEntity.setIndepthAccess(userSubscriptionDetailsRequest.getIndepthAccess());
 
-			if (null != userSubscriptionDetailsRequest.getDownloadLimit())
-				userSubscriptionEntity.setDownloadLimit(userSubscriptionDetailsRequest.getDownloadLimit());
-			if (null != userSubscriptionDetailsRequest.getTotalWorkspace())
-				userSubscriptionEntity.setTotalWorkspace(userSubscriptionDetailsRequest.getTotalWorkspace());
-			if (null != userSubscriptionDetailsRequest.getSubUserCount())
-				userSubscriptionEntity.setSubUserCount(userSubscriptionDetailsRequest.getSubUserCount());
-			if (null != userSubscriptionDetailsRequest.getDataAccessInMonth())
-				userSubscriptionEntity.setDataAccessInMonth(userSubscriptionDetailsRequest.getDataAccessInMonth());
-			if (null != userSubscriptionDetailsRequest.getDownloadPerDay())
-				userSubscriptionEntity.setDownloadPerDay(userSubscriptionDetailsRequest.getDownloadPerDay());
-			if (null != userSubscriptionDetailsRequest.getSupport())
-				userSubscriptionEntity.setSupport(userSubscriptionDetailsRequest.getSupport());
-			if (null != userSubscriptionDetailsRequest.getTicketManager())
-				userSubscriptionEntity.setTicketManager(userSubscriptionDetailsRequest.getTicketManager());
-			if (null != userSubscriptionDetailsRequest.getRecordsPerWorkspace())
-				userSubscriptionEntity.setRecordsPerWorkspace(userSubscriptionDetailsRequest.getRecordsPerWorkspace());
-			if (null != userSubscriptionDetailsRequest.getDisplayFields())
-				userSubscriptionEntity.setDisplayFields(userSubscriptionDetailsRequest.getDisplayFields());
-			if (null != userSubscriptionDetailsRequest.getQueryPerDay())
-				userSubscriptionEntity.setQueryPerDay(userSubscriptionDetailsRequest.getQueryPerDay());
-			if (null != userSubscriptionDetailsRequest.getAccountExpireDate())
-				userSubscriptionEntity.setAccountExpireDate(userSubscriptionDetailsRequest.getAccountExpireDate());
-			if (null != userSubscriptionDetailsRequest.getAllowedChapter())
-				userSubscriptionEntity.setAllowedChapter(userSubscriptionDetailsRequest.getAllowedChapter());
-			if (null != userSubscriptionDetailsRequest.getDataAccessUpto())
-				userSubscriptionEntity.setDataAccessUpto(userSubscriptionDetailsRequest.getDataAccessUpto());
-			if (null != userSubscriptionDetailsRequest.getCountryId())
-				userSubscriptionEntity.setCountries(userSubscriptionDetailsRequest.getCountryId().toString());
-			if (null != userSubscriptionDetailsRequest.getIndepthAccess())
-				userSubscriptionEntity.setIndepthAccess(userSubscriptionDetailsRequest.getIndepthAccess());
-
-			userSubscriptionEntity.setModifiedDate(new Date());
-			userSubscriptionEntity.setModifiedBy(accessedBy);
-			userSubscriptionEntity = userSubscriptionRepository.save(userSubscriptionEntity);
+				userSubscriptionEntity.setModifiedDate(new Date());
+				userSubscriptionEntity.setModifiedBy(accessedBy);
+				userSubscriptionEntity = userSubscriptionRepository.save(userSubscriptionEntity);
+			}
+			msg = "Update success";
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			msg = "Not update.Please try again.";
 		}
-
+		return msg;
 	}
 
 	public LoginList loginStatus(Long loginId, Long accessedBy) {

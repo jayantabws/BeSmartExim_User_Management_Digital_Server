@@ -128,14 +128,14 @@ public class UserManagementController {
 	}
 
 	@PutMapping(value = "/user-subscription/update/{userSubscriptionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateUserSubscription(
+	public ResponseEntity<String> updateUserSubscription(
 			@RequestBody UserSubscriptionDetailsRequest userSubscriptionDetailsRequest,
 			@PathVariable Long userSubscriptionId, @RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
-		userManagementService.updateUserSubscription(userSubscriptionDetailsRequest, userSubscriptionId, accessedBy);
+		String msg = userManagementService.updateUserSubscription(userSubscriptionDetailsRequest, userSubscriptionId, accessedBy);
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok(msg);
 
 	}
 
