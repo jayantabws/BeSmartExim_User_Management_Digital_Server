@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -134,12 +135,15 @@ public class UserManagementService {
 
 			UserSubscription userSubscription = subsList.get(0);
 
-			Date lastLoginTime = loginDetailsRepository.findByUplineIdMaxLoginDate(userSubscription.getUserId());
+			Date lastLogin = loginDetailsRepository.findByUplineIdMaxLoginDate(userSubscription.getUserId());
+			LocalDate lastLoginTime = lastLogin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			
+			LocalDate currentDate = LocalDate.now();
+			
 
-			Date currentDate = new Date();
-
-			if (lastLoginTime != null && ((lastLoginTime.getDate() != currentDate.getDate())
-					|| lastLoginTime.getMonth() != currentDate.getMonth()
+			
+			if (lastLoginTime != null && ((lastLoginTime.getDayOfMonth() != currentDate.getDayOfMonth())
+					|| lastLoginTime.getMonthValue() != currentDate.getMonthValue()
 					|| lastLoginTime.getYear() != currentDate.getYear())) {
 
 				HttpHeaders headers = new HttpHeaders();
