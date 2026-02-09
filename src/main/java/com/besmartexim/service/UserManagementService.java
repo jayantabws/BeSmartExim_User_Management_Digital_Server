@@ -194,12 +194,11 @@ public class UserManagementService {
 	}
 
 	public ForgotPasswordResponse forgotPassword(String userEmail) throws Exception {
-		// TODO Auto-generated method stub
 
 		ForgotPasswordResponse forgotPasswordResponse = new ForgotPasswordResponse();
 		String randomNumber = "";
 
-		User userEntity = userRepository.findByEmailAndUserType(userEmail, "USER");
+		User userEntity = userRepository.findByEmailAndUserTypeAndIsDelete(userEmail, "USER", "N");
 		if (userEntity == null) {
 			throw new ServiceException(AppConstant.USER_ERROR_CODE5,
 					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE5));

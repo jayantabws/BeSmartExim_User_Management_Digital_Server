@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	
 	public User findByEmailAndUserType(String email, String userType);
 	
+	public User findByEmailAndUserTypeAndIsDelete(String email, String userType, String isDelete);
+	
 	public User findByEmailAndIsDelete(String email, String isDelete);
 
 	public List<User> findAllByIsDeleteOrderByIdDesc(String isDelete);
