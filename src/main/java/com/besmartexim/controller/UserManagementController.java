@@ -13,11 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.besmartexim.database.entity.AdminPermission;
+import com.besmartexim.dto.request.AdminPermissionRequest;
 import com.besmartexim.dto.request.LoginRequest;
 import com.besmartexim.dto.request.LogoutRequest;
 import com.besmartexim.dto.request.UserRequest;
 import com.besmartexim.dto.request.UserSubscriptionDetailsRequest;
 import com.besmartexim.dto.request.UserSubscriptionRequest;
+import com.besmartexim.dto.response.AdminLoginResponse;
 import com.besmartexim.dto.response.ForgotPasswordResponse;
 import com.besmartexim.dto.response.LoginList;
 import com.besmartexim.dto.response.LoginListResponse;
@@ -54,9 +58,9 @@ public class UserManagementController {
 	}
 
 	@PostMapping(value = "/adminlogin", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> adminLogin(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
+	public ResponseEntity<AdminLoginResponse> adminLogin(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
 		logger.info("Request : /user-management/adminlogin");
-		LoginResponse loginResponse = userManagementService.adminLogin(loginRequest);
+		AdminLoginResponse loginResponse = userManagementService.adminLogin(loginRequest);
 		logger.info("Response : " + loginResponse);
 		return new ResponseEntity<>(loginResponse, HttpStatus.OK);
 	}
@@ -256,6 +260,28 @@ public class UserManagementController {
 		Long count = userManagementService.currentLoginUserCount(accessedBy);
 
 		return new ResponseEntity<>(count, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/permission/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updatePermission(@RequestBody AdminPermissionRequest adminPermissionRequest, @PathVariable Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
+		logger.info("accessedBy = " + accessedBy);
+
+		userManagementService.updateAdminPermission(adminPermissionRequest, userId, accessedBy);
+
+		return new ResponseEntity<>(HttpStatus.OK);
+
+	}
+	
+	@GetMapping(value = "/permission/get/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getPermission(@PathVariable Long userId,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
+		logger.info("accessedBy = " + accessedBy);
+
+		AdminPermission permission = userManagementService.getAdminPermission(userId, accessedBy);
+
+		return ResponseEntity.ok(permission);
+
 	}
 
 }

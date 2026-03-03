@@ -41,17 +41,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.besmartexim.database.entity.AdminPermission;
 import com.besmartexim.database.entity.LoginDetails;
 import com.besmartexim.database.entity.User;
 import com.besmartexim.database.entity.UserSubscription;
+import com.besmartexim.database.repository.AdminPermissionRepo;
 import com.besmartexim.database.repository.LoginDetailsRepository;
 import com.besmartexim.database.repository.UserRepository;
 import com.besmartexim.database.repository.UserSubscriptionRepository;
+import com.besmartexim.dto.request.AdminPermissionRequest;
 import com.besmartexim.dto.request.LoginRequest;
 import com.besmartexim.dto.request.LogoutRequest;
 import com.besmartexim.dto.request.UserRequest;
 import com.besmartexim.dto.request.UserSubscriptionDetailsRequest;
 import com.besmartexim.dto.request.UserSubscriptionRequest;
+import com.besmartexim.dto.response.AdminLoginResponse;
 import com.besmartexim.dto.response.ForgotPasswordResponse;
 import com.besmartexim.dto.response.LoginList;
 import com.besmartexim.dto.response.LoginListResponse;
@@ -70,6 +74,9 @@ public class UserManagementService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private AdminPermissionRepo permissionRepo;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -297,9 +304,9 @@ public class UserManagementService {
 		}
 	}
 
-	public LoginResponse adminLogin(LoginRequest loginRequest) throws Exception {
+	public AdminLoginResponse adminLogin(LoginRequest loginRequest) throws Exception {
 
-		LoginResponse loginResponse = new LoginResponse();
+		AdminLoginResponse loginResponse = new AdminLoginResponse();
 
 		User userEntity = userRepository.findByEmailAndPasswordAndUserType(loginRequest.getEmail(),
 				loginRequest.getPassword(), "ADMIN");
@@ -320,7 +327,11 @@ public class UserManagementService {
 			loginResponse.setLastname(userEntity.getLastname());
 			loginResponse.setEmail(userEntity.getEmail());
 			loginResponse.setMobile(userEntity.getMobile());
-
+			
+			// Get all permission for the ADMIN user............
+			AdminPermission permission = this.permissionRepo.findByUserId(userEntity.getId());
+			loginResponse.setPermission(permission);
+			
 			LoginDetails loginDetailsEntity = new LoginDetails();
 			loginDetailsEntity.setUserId(userEntity.getId());
 			loginDetailsEntity.setIpAddress(loginRequest.getIpaddress());
@@ -388,6 +399,11 @@ public class UserManagementService {
 			if (null != memberId)
 				userEntity.setMemberId(memberId);
 			userEntity = userRepository.save(userEntity);
+			
+			if(userEntity.getUserType().equalsIgnoreCase("ADMIN")  && userEntity.getId()>0) {
+				AdminPermission permission = new AdminPermission(userEntity.getId(), "N", "N", "N", "N", "N", "N", "N", accessedBy, new Date());
+				permissionRepo.save(permission);
+			}
 
 			if (null != subscriptionId) {
 				UserSubscription userSubscriptionEntity = new UserSubscription();
@@ -1097,5 +1113,45 @@ public class UserManagementService {
 
 		return count;
 	}
+	
+	
+	public void updateAdminPermission(AdminPermissionRequest request, Long userId, Long accessedBy) throws Exception {
+		
+		AdminPermission permission = this.permissionRepo.findByUserId(userId);
+		if (permission == null) {
+			throw new ServiceException("Admin permission not registered");
+		} else {
+			if (null != request.getUsers())
+				permission.setUsers(request.getUsers());
+			if (null != request.getAdminUsers())
+				permission.setAdminUsers(request.getAdminUsers());
+			if (null != request.getSubscriptions())
+				permission.setSubscriptions(request.getSubscriptions());
+			if (null != request.getActivityLog())
+				permission.setActivityLog(request.getActivityLog());
+			if (null != request.getCountries())
+				permission.setCountries(request.getCountries());
+			if (null != request.getContacts())
+				permission.setContacts(request.getContacts());
+			if (null != request.getSiteSettings())
+				permission.setSiteSettings(request.getSiteSettings());
 
+			permission.setModifiedDate(new Date());
+			permission.setModifiedBy(accessedBy);
+			permission = permissionRepo.save(permission);
+		}
+	}
+
+	
+public AdminPermission getAdminPermission(Long userId, Long accessedBy) throws Exception {
+		
+		AdminPermission permission = null;
+		if (userId == null || userId == 0) {
+			throw new ServiceException("Invalid User ID");
+		} else {
+			permission = this.permissionRepo.findByUserId(userId);
+		}
+		
+		return permission;
+	}
 }
