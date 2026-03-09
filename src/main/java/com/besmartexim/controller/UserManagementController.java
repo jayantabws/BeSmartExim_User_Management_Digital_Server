@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.besmartexim.database.entity.AdminPermission;
+import com.besmartexim.database.entity.LoginDetails;
 import com.besmartexim.dto.request.AdminPermissionRequest;
 import com.besmartexim.dto.request.LoginRequest;
 import com.besmartexim.dto.request.LogoutRequest;
@@ -281,6 +282,17 @@ public class UserManagementController {
 		AdminPermission permission = userManagementService.getAdminPermission(userId, accessedBy);
 
 		return ResponseEntity.ok(permission);
+
+	}
+	
+	
+	@GetMapping(value = "/user/loginstatusbyuserid", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> loginStatusByUserId(@RequestHeader(required = true) Long accessedBy) throws Exception {
+		logger.info("accessedBy = " + accessedBy);
+
+		List<LoginDetails> list = userManagementService.loginStatusByUserId(accessedBy);
+
+		return new ResponseEntity<>(list.size(), HttpStatus.OK);
 
 	}
 

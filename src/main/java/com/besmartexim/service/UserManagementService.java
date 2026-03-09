@@ -1154,4 +1154,13 @@ public AdminPermission getAdminPermission(Long userId, Long accessedBy) throws E
 		
 		return permission;
 	}
+
+  public List<LoginDetails> loginStatusByUserId(Long accessedBy) {
+
+	List<LoginDetails> srcList = null;
+
+	srcList = loginDetailsRepository.findByLogoutTimeNULL(accessedBy);
+
+	return  srcList;
+}
 }
