@@ -142,8 +142,10 @@ public class UserManagementService {
 
 			UserSubscription userSubscription = subsList.get(0);
 
+			LocalDate lastLoginTime = null;
 			Date lastLogin = loginDetailsRepository.findByUplineIdMaxLoginDate(userSubscription.getUserId());
-			LocalDate lastLoginTime = lastLogin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			if(lastLogin != null)
+				lastLoginTime = lastLogin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			
 			LocalDate currentDate = LocalDate.now();
 			
