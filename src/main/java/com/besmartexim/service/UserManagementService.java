@@ -874,20 +874,20 @@ public class UserManagementService {
 
 		if (userId != null) {
 			if (fromDate != null)
-				srcList = loginDetailsRepository.findByUserIdAndDateRange(userId, pageable.getPageNumber(),
+				srcList = loginDetailsRepository.findByUserIdAndDateRange(userId, pageable.getPageNumber()*pageable.getPageSize(),
 						pageable.getPageSize(), fromDate, toDate);// D1
 			else
 				srcList = loginDetailsRepository.findByUserId(userId, pageable);
 		} else if (uplineId != null) {
 			if (fromDate != null)
 				srcList = loginDetailsRepository.findByUplineIdAndDateRangeOrderByIdDesc(uplineId,
-						pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D2
+						pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D2
 			else
-				srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId, pageable.getPageNumber(),
+				srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId, pageable.getPageNumber()*pageable.getPageSize(),
 						pageable.getPageSize());
 		} else {
 			if (fromDate != null)
-				srcList = loginDetailsRepository.findAllByDateRange(pageable.getPageNumber(), pageable.getPageSize(),
+				srcList = loginDetailsRepository.findAllByDateRange(pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(),
 						fromDate, toDate);// D3
 			else
 				srcList = loginDetailsRepository.findAll(pageable).getContent();
