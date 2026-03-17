@@ -59,7 +59,8 @@ public class UserManagementController {
 	}
 
 	@PostMapping(value = "/adminlogin", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<AdminLoginResponse> adminLogin(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
+	public ResponseEntity<AdminLoginResponse> adminLogin(@RequestBody @Valid LoginRequest loginRequest)
+			throws Exception {
 		logger.info("Request : /user-management/adminlogin");
 		AdminLoginResponse loginResponse = userManagementService.adminLogin(loginRequest);
 		logger.info("Response : " + loginResponse);
@@ -110,13 +111,12 @@ public class UserManagementController {
 	@GetMapping(value = "/user/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserListResponse> userList(@RequestParam(required = false) Long uplineId,
 			@RequestParam(required = false) String userType, @RequestParam(required = false) String isExpired,
-			@RequestParam(required = false) String isActive, @RequestParam(required = true, defaultValue ="0") Integer pageNumber,
-			@RequestHeader(required = true) Long accessedBy)
+			@RequestParam(required = false) String isActive, @RequestHeader(required = true) Long accessedBy)
 			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		UserListResponse userListResponse = userManagementService.userList(uplineId, userType, accessedBy, isExpired,
-				isActive, pageNumber);
+				isActive);
 
 		return new ResponseEntity<>(userListResponse, HttpStatus.OK);
 
@@ -139,7 +139,8 @@ public class UserManagementController {
 			@PathVariable Long userSubscriptionId, @RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
-		String msg = userManagementService.updateUserSubscription(userSubscriptionDetailsRequest, userSubscriptionId, accessedBy);
+		String msg = userManagementService.updateUserSubscription(userSubscriptionDetailsRequest, userSubscriptionId,
+				accessedBy);
 
 		return ResponseEntity.ok(msg);
 
@@ -178,7 +179,6 @@ public class UserManagementController {
 		return new ResponseEntity<>(HttpStatus.OK);
 
 	}
-
 
 	@GetMapping(value = "/user/loginlist", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LoginListResponse> loginList(@RequestParam(required = false) Long userId,
@@ -263,10 +263,10 @@ public class UserManagementController {
 
 		return new ResponseEntity<>(count, HttpStatus.OK);
 	}
-	
+
 	@PutMapping(value = "/permission/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updatePermission(@RequestBody AdminPermissionRequest adminPermissionRequest, @PathVariable Long userId,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
+	public ResponseEntity<?> updatePermission(@RequestBody AdminPermissionRequest adminPermissionRequest,
+			@PathVariable Long userId, @RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		userManagementService.updateAdminPermission(adminPermissionRequest, userId, accessedBy);
@@ -274,10 +274,10 @@ public class UserManagementController {
 		return new ResponseEntity<>(HttpStatus.OK);
 
 	}
-	
+
 	@GetMapping(value = "/permission/get/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getPermission(@PathVariable Long userId,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
+	public ResponseEntity<?> getPermission(@PathVariable Long userId, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		AdminPermission permission = userManagementService.getAdminPermission(userId, accessedBy);
@@ -285,8 +285,7 @@ public class UserManagementController {
 		return ResponseEntity.ok(permission);
 
 	}
-	
-	
+
 	@GetMapping(value = "/user/loginstatusbyuserid", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> loginStatusByUserId(@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
@@ -297,15 +296,26 @@ public class UserManagementController {
 
 	}
 	
-	@GetMapping(value = "/user/count", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Long> userListCount(@RequestParam(required = false) Long uplineId,
-			@RequestParam(required = false) String userType, @RequestParam(required = false) String isExpired,
-			@RequestParam(required = false) String isActive, @RequestHeader(required = true) Long accessedBy)
+	@GetMapping(value = "/user/listbyuplineid", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserListResponse> userListByUplineId(@RequestParam(required = true) Long uplineId,
+			@RequestParam(required = true, defaultValue = "0") Integer pageNumber, @RequestParam(required = false) String isDelete,
+			@RequestHeader(required = true) Long accessedBy)
 			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
-		Long count = userManagementService.countUserList(uplineId, userType, accessedBy, isExpired,
-				isActive);
+		UserListResponse userListResponse = userManagementService.userListByUplineId(uplineId,isDelete, accessedBy, pageNumber);
+
+		return new ResponseEntity<>(userListResponse, HttpStatus.OK);
+
+	}
+	
+	@GetMapping(value = "/user/countbyuplineid", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Long> countByUplineId(@RequestParam(required = true) Long uplineId, @RequestParam(required = false) String isDelete,
+			@RequestHeader(required = true) Long accessedBy)
+			throws Exception {
+		logger.info("accessedBy = " + accessedBy);
+
+		Long count = userManagementService.countByUplineId(uplineId, isDelete, accessedBy);
 
 		return new ResponseEntity<>(count, HttpStatus.OK);
 

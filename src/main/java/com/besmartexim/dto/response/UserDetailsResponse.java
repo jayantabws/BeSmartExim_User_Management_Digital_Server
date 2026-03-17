@@ -14,6 +14,7 @@ public class UserDetailsResponse {
 	private String userType;
 	private String companyName;
 	private String isActive;
+	private String isDelete;
 	private Date createdDate;
 	private Date subscriptionExpiredDate;
 	private Long uplineId;
@@ -109,6 +110,12 @@ public class UserDetailsResponse {
 	}
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
+	}
+	public String getIsDelete() {
+		return isDelete;
+	}
+	public void setIsDelete(String isDelete) {
+		this.isDelete = isDelete;
 	}
 	
 	

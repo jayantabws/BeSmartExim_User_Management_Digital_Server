@@ -74,7 +74,7 @@ public class UserManagementService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private AdminPermissionRepo permissionRepo;
 
@@ -144,13 +144,11 @@ public class UserManagementService {
 
 			LocalDate lastLoginTime = null;
 			Date lastLogin = loginDetailsRepository.findByUplineIdMaxLoginDate(userSubscription.getUserId());
-			if(lastLogin != null)
+			if (lastLogin != null)
 				lastLoginTime = lastLogin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			
-			LocalDate currentDate = LocalDate.now();
-			
 
-			
+			LocalDate currentDate = LocalDate.now();
+
 			if (lastLoginTime != null && ((lastLoginTime.getDayOfMonth() != currentDate.getDayOfMonth())
 					|| lastLoginTime.getMonthValue() != currentDate.getMonthValue()
 					|| lastLoginTime.getYear() != currentDate.getYear())) {
@@ -329,11 +327,11 @@ public class UserManagementService {
 			loginResponse.setLastname(userEntity.getLastname());
 			loginResponse.setEmail(userEntity.getEmail());
 			loginResponse.setMobile(userEntity.getMobile());
-			
+
 			// Get all permission for the ADMIN user............
 			AdminPermission permission = this.permissionRepo.findByUserId(userEntity.getId());
 			loginResponse.setPermission(permission);
-			
+
 			LoginDetails loginDetailsEntity = new LoginDetails();
 			loginDetailsEntity.setUserId(userEntity.getId());
 			loginDetailsEntity.setIpAddress(loginRequest.getIpaddress());
@@ -401,9 +399,10 @@ public class UserManagementService {
 			if (null != memberId)
 				userEntity.setMemberId(memberId);
 			userEntity = userRepository.save(userEntity);
-			
-			if(userEntity.getUserType().equalsIgnoreCase("ADMIN")  && userEntity.getId()>0) {
-				AdminPermission permission = new AdminPermission(userEntity.getId(), "N", "N", "N", "N", "N", "N", "N", accessedBy, new Date());
+
+			if (userEntity.getUserType().equalsIgnoreCase("ADMIN") && userEntity.getId() > 0) {
+				AdminPermission permission = new AdminPermission(userEntity.getId(), "N", "N", "N", "N", "N", "N", "N",
+						accessedBy, new Date());
 				permissionRepo.save(permission);
 			}
 
@@ -510,24 +509,23 @@ public class UserManagementService {
 		return userDetailsResponse;
 	}
 
-	public UserListResponse userList(Long uplineId, String userType, Long accessedBy, String isExpired, String isActive, Integer pageNumber)
+	public UserListResponse userList(Long uplineId, String userType, Long accessedBy, String isExpired, String isActive)
 			throws Exception {
 
 		UserListResponse userListResponse = new UserListResponse();
-		Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
 
 		List<User> srcList = null;
 
 		if (uplineId != null) {
-			srcList = userRepository.findAllByIsDeleteAndUplineId("N", uplineId, pageable).getContent();
+			srcList = userRepository.findAllByIsDeleteAndUplineIdOrderByIdDesc("N", uplineId);
 		} else if (userType != null && isExpired == null && isActive == null) {
-			srcList = userRepository.findAllByIsDeleteAndUserType("N", userType, pageable).getContent();
+			srcList = userRepository.findAllByIsDeleteAndUserTypeOrderByIdDesc("N", userType);
 		} else if (isExpired != null && userType != null && isActive == null) {
-			srcList = userRepository.findAllExpiredUsers(pageNumber*10, 10);
+			srcList = userRepository.findAllExpiredUsers();
 		} else if (userType != null && isActive != null && isExpired == null) {
-			srcList = this.userRepository.findAllByIsActive(isActive, pageable).getContent();
+			srcList = this.userRepository.findAllByIsActive(isActive);
 		} else {
-			srcList = userRepository.findAllByIsDelete("N", pageable).getContent();
+			srcList = userRepository.findAllByIsDeleteOrderByIdDesc("N");
 		}
 
 		// List<User> srcList = userRepository.findAll();
@@ -875,21 +873,21 @@ public class UserManagementService {
 
 		if (userId != null) {
 			if (fromDate != null)
-				srcList = loginDetailsRepository.findByUserIdAndDateRange(userId, pageable.getPageNumber()*pageable.getPageSize(),
-						pageable.getPageSize(), fromDate, toDate);// D1
+				srcList = loginDetailsRepository.findByUserIdAndDateRange(userId,
+						pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D1
 			else
 				srcList = loginDetailsRepository.findByUserId(userId, pageable);
 		} else if (uplineId != null) {
 			if (fromDate != null)
 				srcList = loginDetailsRepository.findByUplineIdAndDateRangeOrderByIdDesc(uplineId,
-						pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D2
+						pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D2
 			else
-				srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId, pageable.getPageNumber()*pageable.getPageSize(),
-						pageable.getPageSize());
+				srcList = loginDetailsRepository.findByUplineIdOrderByIdDesc(uplineId,
+						pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
 		} else {
 			if (fromDate != null)
-				srcList = loginDetailsRepository.findAllByDateRange(pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(),
-						fromDate, toDate);// D3
+				srcList = loginDetailsRepository.findAllByDateRange(pageable.getPageNumber() * pageable.getPageSize(),
+						pageable.getPageSize(), fromDate, toDate);// D3
 			else
 				srcList = loginDetailsRepository.findAll(pageable).getContent();
 		}
@@ -984,7 +982,7 @@ public class UserManagementService {
 	}
 
 	public UserSubscriptionList activeUserSubscriptionList(Long userId, Long accessedBy) {
-		
+
 		UserSubscriptionList userSubscriptionList = new UserSubscriptionList();
 
 		List<UserSubscription> srcList = userSubscriptionRepository.findAllByUserIdAndIsActiveOrderByIdDesc(userId,
@@ -1010,9 +1008,9 @@ public class UserManagementService {
 
 	public String updateUserSubscription(UserSubscriptionDetailsRequest userSubscriptionDetailsRequest,
 			Long userSubscriptionId, Long accessedBy) {
-			String msg = null;
+		String msg = null;
 		try {
-			
+
 			UserSubscription userSubscriptionEntity = userSubscriptionRepository.findById(userSubscriptionId).get();
 			if (userSubscriptionEntity == null) {
 				throw new ServiceException("Incorrect User Subscription");
@@ -1033,7 +1031,8 @@ public class UserManagementService {
 				if (null != userSubscriptionDetailsRequest.getTicketManager())
 					userSubscriptionEntity.setTicketManager(userSubscriptionDetailsRequest.getTicketManager());
 				if (null != userSubscriptionDetailsRequest.getRecordsPerWorkspace())
-					userSubscriptionEntity.setRecordsPerWorkspace(userSubscriptionDetailsRequest.getRecordsPerWorkspace());
+					userSubscriptionEntity
+							.setRecordsPerWorkspace(userSubscriptionDetailsRequest.getRecordsPerWorkspace());
 				if (null != userSubscriptionDetailsRequest.getDisplayFields())
 					userSubscriptionEntity.setDisplayFields(userSubscriptionDetailsRequest.getDisplayFields());
 				if (null != userSubscriptionDetailsRequest.getQueryPerDay())
@@ -1054,7 +1053,7 @@ public class UserManagementService {
 				userSubscriptionEntity = userSubscriptionRepository.save(userSubscriptionEntity);
 			}
 			msg = "Update success";
-			
+
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			msg = "Not update.Please try again.";
@@ -1116,10 +1115,9 @@ public class UserManagementService {
 
 		return count;
 	}
-	
-	
+
 	public void updateAdminPermission(AdminPermissionRequest request, Long userId, Long accessedBy) throws Exception {
-		
+
 		AdminPermission permission = this.permissionRepo.findByUserId(userId);
 		if (permission == null) {
 			throw new ServiceException("Admin permission not registered");
@@ -1145,43 +1143,75 @@ public class UserManagementService {
 		}
 	}
 
-	
-public AdminPermission getAdminPermission(Long userId, Long accessedBy) throws Exception {
-		
+	public AdminPermission getAdminPermission(Long userId, Long accessedBy) throws Exception {
+
 		AdminPermission permission = null;
 		if (userId == null || userId == 0) {
 			throw new ServiceException("Invalid User ID");
 		} else {
 			permission = this.permissionRepo.findByUserId(userId);
 		}
-		
+
 		return permission;
 	}
 
-  public List<LoginDetails> loginStatusByUserId(Long accessedBy) {
+	public List<LoginDetails> loginStatusByUserId(Long accessedBy) {
 
-	List<LoginDetails> srcList = null;
+		List<LoginDetails> srcList = null;
 
-	srcList = loginDetailsRepository.findByLogoutTimeNULL(accessedBy);
+		srcList = loginDetailsRepository.findByLogoutTimeNULL(accessedBy);
 
-	return  srcList;
-  }
-  
-  public Long countUserList(Long uplineId, String userType, Long accessedBy, String isExpired, String isActive)
+		return srcList;
+	}
+	
+	public UserListResponse userListByUplineId(Long uplineId, String isDelete, Long accessedBy, Integer pageNumber)
 			throws Exception {
 
+		UserListResponse userListResponse = new UserListResponse();
+		Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+		List<User> srcList = null;
+
+		if (uplineId != null && isDelete != null) {
+			srcList = userRepository.findByIsDeleteAndUplineId(isDelete,uplineId,pageable).getContent();
+		} else {
+			srcList = userRepository.findByUplineId(uplineId, pageable).getContent();
+		}
+
+		List<UserDetailsResponse> targetList = new ArrayList<UserDetailsResponse>();
+
+		if (null != srcList && !srcList.isEmpty()) {
+
+			for (User user : srcList) {
+				UserDetailsResponse userDetails = new UserDetailsResponse();
+				BeanUtils.copyProperties(user, userDetails);
+
+				List<UserSubscription> srcList1 = userSubscriptionRepository
+						.findAllByUserIdAndIsActiveOrderByIdDesc(user.getId(), "Y");
+				if (null != srcList1) {
+
+					for (UserSubscription userSubscription : srcList1) {
+						userDetails.setSubscriptionExpiredDate(userSubscription.getAccountExpireDate());
+					}
+				}
+
+				targetList.add(userDetails);
+			}
+		}
+
+		userListResponse.setUserList(targetList);
+
+		return userListResponse;
+	}
+	
+	public Long countByUplineId(Long uplineId, String isDelete, Long accessedBy)
+			throws Exception {
+		
 		Long count = 0l;
 
-		if (uplineId != null) {
-			count = userRepository.countByIsDeleteAndUplineId("N", uplineId);
-		} else if (userType != null && isExpired == null && isActive == null) {
-			count = userRepository.countByIsDeleteAndUserType("N", userType);
-		} else if (isExpired != null && userType != null && isActive == null) {
-			count = userRepository.countAllExpiredUsers();
-		} else if (userType != null && isActive != null && isExpired == null) {
-			count = this.userRepository.countByIsActive(isActive);
+		if (uplineId != null && isDelete != null) {
+			count = userRepository.countByIsDeleteAndUplineId(isDelete, uplineId);
 		} else {
-			count = userRepository.countByIsDelete("N");
+			count = userRepository.countByUplineId(uplineId);
 		}
 
 		return count;

@@ -10,45 +10,42 @@ import org.springframework.stereotype.Repository;
 
 import com.besmartexim.database.entity.User;
 
-
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long> {
 
 	public User findByEmailAndPassword(String email, String password);
-	
+
 	public User findByEmailAndPasswordAndUserType(String email, String password, String userType);
 
-	public User findByEmailAndPasswordAndUserTypeAndIsDelete(String email, String password, String userType, String isDelete);
-	
+	public User findByEmailAndPasswordAndUserTypeAndIsDelete(String email, String password, String userType,
+			String isDelete);
+
 	public User findByEmailAndUserType(String email, String userType);
-	
+
 	public User findByEmailAndUserTypeAndIsDelete(String email, String userType, String isDelete);
-	
+
 	public User findByEmailAndIsDelete(String email, String isDelete);
 
-	public Page<User> findAllByIsDelete(String isDelete, Pageable pageable);
+	public List<User> findAllByIsDeleteOrderByIdDesc(String isDelete);
 
-	public Page<User> findAllByIsDeleteAndUplineId(String string, Long uplineId, Pageable pageable);
+	public List<User> findAllByIsDeleteAndUplineIdOrderByIdDesc(String string, Long uplineId);
 
-	public Page<User> findAllByIsDeleteAndUserType(String string, String userType, Pageable pageable);
+	public List<User> findAllByIsDeleteAndUserTypeOrderByIdDesc(String string, String userType);
+
+	public List<User> findAllByIsActive(String isAcvive);
+
+	// public List<User> findAllByIsdeleteOrderByIdDesc(String isDelete);
+
+	// public User findById(Long id);
+
+	@Query(nativeQuery = true, value = "SELECT u.*, us.account_expire_date FROM user_subscription us, users u where u.id = us.user_id and u.is_delete='N' and us.account_expire_date < GETDATE();")
+	public List<User> findAllExpiredUsers();
 	
-	public Page<User> findAllByIsActive(String isAcvive, Pageable pageable);
+	public Page<User> findByIsDeleteAndUplineId(String isDelete, Long uplineId, Pageable pageable);
 	
-	//public List<User> findAllByIsdeleteOrderByIdDesc(String isDelete);
+	public Page<User> findByUplineId(Long uplineId, Pageable pageable);
 	
-	//public User findById(Long id);
+	public Long countByIsDeleteAndUplineId(String isDelete, Long uplineId);
 	
-	@Query(nativeQuery = true, value="SELECT u.*, us.account_expire_date FROM user_subscription us, users u where u.id = us.user_id and u.is_delete='N' and us.account_expire_date < GETDATE() order by u.id desc offset :pageNumber rows fetch next :pageSize rows only ;")
-	public List<User> findAllExpiredUsers(Integer pageNumber, Integer pageSize);
-	
-	public Long countByIsDeleteAndUplineId(String string, Long uplineId);
-	
-	public Long countByIsDeleteAndUserType(String string, String userType);
-	
-	@Query(nativeQuery = true, value="SELECT count(*) FROM user_subscription us, users u where u.id = us.user_id and u.is_delete='N' and us.account_expire_date < GETDATE();")
-	public Long countAllExpiredUsers();
-	
-	public Long countByIsActive(String isAcvive);
-	
-	public Long countByIsDelete(String isDelete);
+	public Long countByUplineId(Long uplineId);
 }
