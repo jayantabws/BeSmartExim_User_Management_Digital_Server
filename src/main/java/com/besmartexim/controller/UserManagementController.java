@@ -110,12 +110,13 @@ public class UserManagementController {
 	@GetMapping(value = "/user/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserListResponse> userList(@RequestParam(required = false) Long uplineId,
 			@RequestParam(required = false) String userType, @RequestParam(required = false) String isExpired,
-			@RequestParam(required = false) String isActive, @RequestHeader(required = true) Long accessedBy)
+			@RequestParam(required = false) String isActive, @RequestParam(required = true, defaultValue ="0") Integer pageNumber,
+			@RequestHeader(required = true) Long accessedBy)
 			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		UserListResponse userListResponse = userManagementService.userList(uplineId, userType, accessedBy, isExpired,
-				isActive);
+				isActive, pageNumber);
 
 		return new ResponseEntity<>(userListResponse, HttpStatus.OK);
 
@@ -293,6 +294,20 @@ public class UserManagementController {
 		List<LoginDetails> list = userManagementService.loginStatusByUserId(accessedBy);
 
 		return new ResponseEntity<>(list.size(), HttpStatus.OK);
+
+	}
+	
+	@GetMapping(value = "/user/count", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Long> userListCount(@RequestParam(required = false) Long uplineId,
+			@RequestParam(required = false) String userType, @RequestParam(required = false) String isExpired,
+			@RequestParam(required = false) String isActive, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
+		logger.info("accessedBy = " + accessedBy);
+
+		Long count = userManagementService.countUserList(uplineId, userType, accessedBy, isExpired,
+				isActive);
+
+		return new ResponseEntity<>(count, HttpStatus.OK);
 
 	}
 

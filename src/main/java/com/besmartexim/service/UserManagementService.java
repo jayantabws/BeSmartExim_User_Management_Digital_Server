@@ -510,23 +510,24 @@ public class UserManagementService {
 		return userDetailsResponse;
 	}
 
-	public UserListResponse userList(Long uplineId, String userType, Long accessedBy, String isExpired, String isActive)
+	public UserListResponse userList(Long uplineId, String userType, Long accessedBy, String isExpired, String isActive, Integer pageNumber)
 			throws Exception {
 
 		UserListResponse userListResponse = new UserListResponse();
+		Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
 
 		List<User> srcList = null;
 
 		if (uplineId != null) {
-			srcList = userRepository.findAllByIsDeleteAndUplineIdOrderByIdDesc("N", uplineId);
+			srcList = userRepository.findAllByIsDeleteAndUplineId("N", uplineId, pageable).getContent();
 		} else if (userType != null && isExpired == null && isActive == null) {
-			srcList = userRepository.findAllByIsDeleteAndUserTypeOrderByIdDesc("N", userType);
+			srcList = userRepository.findAllByIsDeleteAndUserType("N", userType, pageable).getContent();
 		} else if (isExpired != null && userType != null && isActive == null) {
-			srcList = userRepository.findAllExpiredUsers();
+			srcList = userRepository.findAllExpiredUsers(pageNumber*10, 10);
 		} else if (userType != null && isActive != null && isExpired == null) {
-			srcList = this.userRepository.findAllByIsActive(isActive);
+			srcList = this.userRepository.findAllByIsActive(isActive, pageable).getContent();
 		} else {
-			srcList = userRepository.findAllByIsDeleteOrderByIdDesc("N");
+			srcList = userRepository.findAllByIsDelete("N", pageable).getContent();
 		}
 
 		// List<User> srcList = userRepository.findAll();
@@ -1164,5 +1165,25 @@ public AdminPermission getAdminPermission(Long userId, Long accessedBy) throws E
 	srcList = loginDetailsRepository.findByLogoutTimeNULL(accessedBy);
 
 	return  srcList;
-}
+  }
+  
+  public Long countUserList(Long uplineId, String userType, Long accessedBy, String isExpired, String isActive)
+			throws Exception {
+
+		Long count = 0l;
+
+		if (uplineId != null) {
+			count = userRepository.countByIsDeleteAndUplineId("N", uplineId);
+		} else if (userType != null && isExpired == null && isActive == null) {
+			count = userRepository.countByIsDeleteAndUserType("N", userType);
+		} else if (isExpired != null && userType != null && isActive == null) {
+			count = userRepository.countAllExpiredUsers();
+		} else if (userType != null && isActive != null && isExpired == null) {
+			count = this.userRepository.countByIsActive(isActive);
+		} else {
+			count = userRepository.countByIsDelete("N");
+		}
+
+		return count;
+	}
 }
