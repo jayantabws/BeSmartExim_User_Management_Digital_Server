@@ -1168,7 +1168,7 @@ public class UserManagementService {
 			throws Exception {
 
 		UserListResponse userListResponse = new UserListResponse();
-		Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 		List<User> srcList = null;
 
 		if (uplineId != null && isDelete != null) {
@@ -1180,9 +1180,9 @@ public class UserManagementService {
 		List<UserDetailsResponse> targetList = new ArrayList<UserDetailsResponse>();
 
 		if (null != srcList && !srcList.isEmpty()) {
-
+			UserDetailsResponse userDetails =null;
 			for (User user : srcList) {
-				UserDetailsResponse userDetails = new UserDetailsResponse();
+				userDetails = new UserDetailsResponse();
 				BeanUtils.copyProperties(user, userDetails);
 
 				List<UserSubscription> srcList1 = userSubscriptionRepository
@@ -1215,5 +1215,26 @@ public class UserManagementService {
 		}
 
 		return count;
+	}
+	
+	public UserListResponse mainUserList(Long accessedBy) throws Exception {
+
+		UserListResponse userListResponse = new UserListResponse();
+
+		List<User> srcList = userRepository.findByUplineId(0l);
+
+		List<UserDetailsResponse> targetList = new ArrayList<UserDetailsResponse>();
+
+		if (null != srcList && !srcList.isEmpty()) {
+			UserDetailsResponse userDetails = null;
+			for (User user : srcList) {
+				userDetails = new UserDetailsResponse();
+				BeanUtils.copyProperties(user, userDetails);
+				targetList.add(userDetails);
+			}
+		}
+		userListResponse.setUserList(targetList);
+
+		return userListResponse;
 	}
 }

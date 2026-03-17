@@ -320,5 +320,16 @@ public class UserManagementController {
 		return new ResponseEntity<>(count, HttpStatus.OK);
 
 	}
+	
+	@GetMapping(value = "/user/listmainuser", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserListResponse> mainUserList(@RequestHeader(required = true) Long accessedBy)
+			throws Exception {
+		logger.info("accessedBy = " + accessedBy);
+
+		UserListResponse userListResponse = userManagementService.mainUserList(accessedBy);
+
+		return new ResponseEntity<>(userListResponse, HttpStatus.OK);
+
+	}
 
 }

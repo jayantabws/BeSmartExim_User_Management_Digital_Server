@@ -48,4 +48,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public Long countByIsDeleteAndUplineId(String isDelete, Long uplineId);
 	
 	public Long countByUplineId(Long uplineId);
+	
+	public List<User> findByUplineId(Long uplineId);
 }
