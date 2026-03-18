@@ -49,5 +49,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	public Long countByUplineId(Long uplineId);
 	
-	public List<User> findByUplineId(Long uplineId);
+	public List<User> findByUplineIdAndUserType(Long uplineId, String userType);
 }

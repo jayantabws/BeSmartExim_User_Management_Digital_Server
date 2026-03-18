@@ -1221,7 +1221,7 @@ public class UserManagementService {
 
 		UserListResponse userListResponse = new UserListResponse();
 
-		List<User> srcList = userRepository.findByUplineId(0l);
+		List<User> srcList = userRepository.findByUplineIdAndUserType(0l,"USER");
 
 		List<UserDetailsResponse> targetList = new ArrayList<UserDetailsResponse>();
 
