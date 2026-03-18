@@ -1168,7 +1168,7 @@ public class UserManagementService {
 			throws Exception {
 
 		UserListResponse userListResponse = new UserListResponse();
-		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
 		List<User> srcList = null;
 
 		if (uplineId != null && isDelete != null) {
