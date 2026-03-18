@@ -401,7 +401,7 @@ public class UserManagementService {
 			userEntity = userRepository.save(userEntity);
 
 			if (userEntity.getUserType().equalsIgnoreCase("ADMIN") && userEntity.getId() > 0) {
-				AdminPermission permission = new AdminPermission(userEntity.getId(), "N", "N", "N", "N", "N", "N", "N",
+				AdminPermission permission = new AdminPermission(userEntity.getId(), "N", "N", "N", "N", "N", "N", "N", "N",
 						accessedBy, new Date());
 				permissionRepo.save(permission);
 			}

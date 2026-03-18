@@ -42,6 +42,9 @@ public class AdminPermission {
 	@Column(name = "site_settings")
 	private String siteSettings;
 	
+	@Column(name = "user_tracker")
+	private String userTracker;
+	
 	@Column(name = "created_by")
 	private Long createdBy;
 	
@@ -158,12 +161,20 @@ public class AdminPermission {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public String getUserTracker() {
+		return userTracker;
+	}
+
+	public void setUserTracker(String userTracker) {
+		this.userTracker = userTracker;
+	}
+
 	public AdminPermission() {
 		super();
 	}
 
 	public AdminPermission(Long userId, String users, String adminUsers, String subscriptions, String activityLog,
-			String countries, String contacts, String siteSettings, Long createdBy, Date createdDate) {
+			String countries, String contacts, String siteSettings, String userTracker, Long createdBy, Date createdDate) {
 		super();
 		this.userId = userId;
 		this.users = users;
@@ -173,6 +184,7 @@ public class AdminPermission {
 		this.countries = countries;
 		this.contacts = contacts;
 		this.siteSettings = siteSettings;
+		this.userTracker = userTracker;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 	}
