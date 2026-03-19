@@ -111,11 +111,8 @@ public class UserManagementService {
 
 		LoginResponse loginResponse = new LoginResponse();
 
-		// User userEntity =
-		// userRepository.findByEmailAndPasswordAndUserType(loginRequest.getEmail(),
-		// loginRequest.getPassword(),"USER");
-		User userEntity = userRepository.findByEmailAndPasswordAndUserTypeAndIsDelete(loginRequest.getEmail(),
-				loginRequest.getPassword(), "USER", "N");
+		User userEntity = userRepository.findByEmailAndUserTypeAndPassword(loginRequest.getEmail(), "USER",
+				loginRequest.getPassword());
 		if (userEntity == null) {
 			throw new ServiceException(AppConstant.USER_ERROR_CODE1,
 					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));
@@ -308,8 +305,8 @@ public class UserManagementService {
 
 		AdminLoginResponse loginResponse = new AdminLoginResponse();
 
-		User userEntity = userRepository.findByEmailAndPasswordAndUserType(loginRequest.getEmail(),
-				loginRequest.getPassword(), "ADMIN");
+		User userEntity = userRepository.findByEmailAndUserTypeAndPassword(loginRequest.getEmail(), "ADMIN",
+				loginRequest.getPassword());
 		if (userEntity == null) {
 			throw new ServiceException(AppConstant.USER_ERROR_CODE1,
 					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));

@@ -15,10 +15,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	public User findByEmailAndPassword(String email, String password);
 
-	public User findByEmailAndPasswordAndUserType(String email, String password, String userType);
-
-	public User findByEmailAndPasswordAndUserTypeAndIsDelete(String email, String password, String userType,
-			String isDelete);
+	@Query(nativeQuery = true, value = "SELECT * FROM [CUS_DB].[dbo].[users] WHERE email= :email \r\n"
+			+ "and user_type= :userType and password = :password COLLATE SQL_Latin1_General_CP1_CS_AS;")
+	public User findByEmailAndUserTypeAndPassword(String email, String userType, String password);
 
 	public User findByEmailAndUserType(String email, String userType);
 
