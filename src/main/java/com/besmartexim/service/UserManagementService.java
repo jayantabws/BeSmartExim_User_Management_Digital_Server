@@ -863,11 +863,11 @@ public class UserManagementService {
 //		
 //	}
 
-	public LoginListResponse loginList(Long userId, Long uplineId, int pageNumber, Long accessedBy, Date fromDate,
+	public LoginListResponse loginList(Long userId, Long uplineId, int pageNumber, int pageSize, Long accessedBy, Date fromDate,
 			Date toDate) throws Exception {
 
 		LoginListResponse loginListResponse = new LoginListResponse();
-		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").descending());
 
 		List<LoginDetails> srcList = null;
 

@@ -184,7 +184,7 @@ public class UserManagementController {
 	public ResponseEntity<LoginListResponse> loginList(@RequestParam(required = false) Long userId,
 			@RequestParam(required = false) Long uplineId, @RequestParam(defaultValue = "0") int pageNumber,
 			@RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
+			@RequestParam(required = false, defaultValue = "20") int pageSize, @RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		Date fd = null, td = null;
@@ -200,7 +200,7 @@ public class UserManagementController {
 			td = new Date();
 		}
 
-		LoginListResponse loginListRespose = userManagementService.loginList(userId, uplineId, pageNumber, accessedBy,
+		LoginListResponse loginListRespose = userManagementService.loginList(userId, uplineId, pageNumber, pageSize, accessedBy,
 				fd, td);
 
 		return new ResponseEntity<>(loginListRespose, HttpStatus.OK);
