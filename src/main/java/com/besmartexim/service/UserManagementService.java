@@ -115,39 +115,31 @@ public class UserManagementService {
 				loginRequest.getPassword());
 		
 		// Verify user is calling from application or not =============Start=============
+		if (userEntity == null) {
+			throw new ServiceException(AppConstant.USER_ERROR_CODE1,
+					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));
+		} else if (userEntity.getUplineId() == 0) {
 
-				if (userEntity == null) {
-					throw new ServiceException(AppConstant.USER_ERROR_CODE1,
-							AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));
-				} else if (userEntity.getUplineId() == 0) {
-					if (userEntity.getIsActive().equalsIgnoreCase("N") || userEntity.getIsDelete().equalsIgnoreCase("Y")) {
-						if (userEntity.getIsActive().equalsIgnoreCase("N")) {
-							throw new ServiceException(AppConstant.USER_ERROR_CODE2,
-									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
-						} else if (userEntity.getIsDelete().equalsIgnoreCase("Y")) {
-							throw new ServiceException(AppConstant.USER_ERROR_CODE3,
-									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
-						}
-					} else {
-						List<LoginDetails> list = this.loginStatusByUserId(userEntity.getId());
+			if (userEntity.getIsActive().equalsIgnoreCase("N")) {
+				throw new ServiceException(AppConstant.USER_ERROR_CODE2,
+						AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
+			} else if (userEntity.getIsDelete().equalsIgnoreCase("Y")) {
+				throw new ServiceException(AppConstant.USER_ERROR_CODE3,
+						AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
+			}
+		} else if (userEntity.getUplineId() != 0) {
+			User userMain = userRepository.findById(userEntity.getUplineId()).orElse(null);
 
-						if (list.size() != 1)
-							throw new ServiceException(AppConstant.USER_ERROR_CODE6,
-									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE6));
-					}
-				} else if (userEntity.getUplineId() != 0) {
-					userEntity = userRepository.findById(userEntity.getUplineId()).orElse(null);
-					if (userEntity.getIsActive().equalsIgnoreCase("N") || userEntity.getIsDelete().equalsIgnoreCase("Y")) {
-						if (userEntity.getIsActive().equalsIgnoreCase("N")) {
-							throw new ServiceException(AppConstant.USER_ERROR_CODE2,
-									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
-						} else if (userEntity.getIsDelete().equalsIgnoreCase("Y")) {
-							throw new ServiceException(AppConstant.USER_ERROR_CODE3,
-									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
-						}
-					}
-				}
-				// Verify user is calling from application or not =============End=============
+			if (userEntity.getIsActive().equalsIgnoreCase("N") || userMain.getIsActive().equalsIgnoreCase("N")) {
+				throw new ServiceException(AppConstant.USER_ERROR_CODE2,
+						AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
+			} else if (userEntity.getIsDelete().equalsIgnoreCase("Y") || userMain.getIsDelete().equalsIgnoreCase("Y")) {
+				throw new ServiceException(AppConstant.USER_ERROR_CODE3,
+						AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
+			}
+		}
+	
+		// Verify user is calling from application or not =============End=============
 				
 //		if (userEntity == null) {
 //			throw new ServiceException(AppConstant.USER_ERROR_CODE1,
