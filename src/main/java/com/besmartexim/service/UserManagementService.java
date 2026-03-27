@@ -113,16 +113,52 @@ public class UserManagementService {
 
 		User userEntity = userRepository.findByEmailAndUserTypeAndPassword(loginRequest.getEmail(), "USER",
 				loginRequest.getPassword());
-		if (userEntity == null) {
-			throw new ServiceException(AppConstant.USER_ERROR_CODE1,
-					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));
-		} else if (userEntity.getIsActive().equals("N")) {
-			throw new ServiceException(AppConstant.USER_ERROR_CODE2,
-					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
-		} else if (userEntity.getIsDelete().equals("Y")) {
-			throw new ServiceException(AppConstant.USER_ERROR_CODE3,
-					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
-		} else {
+		
+		// Verify user is calling from application or not =============Start=============
+
+				if (userEntity == null) {
+					throw new ServiceException(AppConstant.USER_ERROR_CODE1,
+							AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));
+				} else if (userEntity.getUplineId() == 0) {
+					if (userEntity.getIsActive().equalsIgnoreCase("N") || userEntity.getIsDelete().equalsIgnoreCase("Y")) {
+						if (userEntity.getIsActive().equalsIgnoreCase("N")) {
+							throw new ServiceException(AppConstant.USER_ERROR_CODE2,
+									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
+						} else if (userEntity.getIsDelete().equalsIgnoreCase("Y")) {
+							throw new ServiceException(AppConstant.USER_ERROR_CODE3,
+									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
+						}
+					} else {
+						List<LoginDetails> list = this.loginStatusByUserId(userEntity.getId());
+
+						if (list.size() != 1)
+							throw new ServiceException(AppConstant.USER_ERROR_CODE6,
+									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE6));
+					}
+				} else if (userEntity.getUplineId() != 0) {
+					userEntity = userRepository.findById(userEntity.getUplineId()).orElse(null);
+					if (userEntity.getIsActive().equalsIgnoreCase("N") || userEntity.getIsDelete().equalsIgnoreCase("Y")) {
+						if (userEntity.getIsActive().equalsIgnoreCase("N")) {
+							throw new ServiceException(AppConstant.USER_ERROR_CODE2,
+									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
+						} else if (userEntity.getIsDelete().equalsIgnoreCase("Y")) {
+							throw new ServiceException(AppConstant.USER_ERROR_CODE3,
+									AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
+						}
+					}
+				}
+				// Verify user is calling from application or not =============End=============
+				
+//		if (userEntity == null) {
+//			throw new ServiceException(AppConstant.USER_ERROR_CODE1,
+//					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE1));
+//		} else if (userEntity.getIsActive().equals("N")) {
+//			throw new ServiceException(AppConstant.USER_ERROR_CODE2,
+//					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE2));
+//		} else if (userEntity.getIsDelete().equals("Y")) {
+//			throw new ServiceException(AppConstant.USER_ERROR_CODE3,
+//					AppConstant.errormap.get(AppConstant.USER_ERROR_CODE3));
+//		} else {
 
 			List<UserSubscription> subsList = null;
 
@@ -192,7 +228,7 @@ public class UserManagementService {
 			loginResponse.setPassword(userEntity.getPassword());
 			loginResponse.setLoginId(loginDetailsEntity.getId());
 			loginResponse.setSessionId(loginDetailsEntity.getSessionId());
-		}
+//		}
 		// sendEmail(loginRequest.getEmail());
 		return loginResponse;
 	}
@@ -1165,7 +1201,7 @@ public class UserManagementService {
 			throws Exception {
 
 		UserListResponse userListResponse = new UserListResponse();
-		Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 		List<User> srcList = null;
 
 		if (uplineId != null && isDelete != null) {
