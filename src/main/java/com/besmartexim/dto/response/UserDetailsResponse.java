@@ -20,6 +20,7 @@ public class UserDetailsResponse {
 	private Long uplineId;
 	private Long downloadLimit;
 	private Long memberId;
+	private Date modifiedDate;
 	
 	public Long getId() {
 		return id;
@@ -116,6 +117,12 @@ public class UserDetailsResponse {
 	}
 	public void setIsDelete(String isDelete) {
 		this.isDelete = isDelete;
+	}
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 	
 	
