@@ -1239,7 +1239,10 @@ public class UserManagementService {
 		Long count = 0l;
 
 		if (uplineId != null && isDelete != null) {
-			count = userRepository.countByIsDeleteAndUplineId(isDelete, uplineId);
+			if(isDelete.equalsIgnoreCase("N"))
+				count = userRepository.countByIsDeleteAndUplineIdOrId(isDelete, uplineId, uplineId);
+			else
+				count = userRepository.countByIsDeleteAndUplineId(isDelete, uplineId);
 		} else {
 			count = userRepository.countByUplineId(uplineId);
 		}
