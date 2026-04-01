@@ -1195,11 +1195,11 @@ public class UserManagementService {
 			throws Exception {
 
 		UserListResponse userListResponse = new UserListResponse();
-		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(pageNumber, 20, Sort.by("uplineId").ascending());
 		List<User> srcList = null;
 
 		if (uplineId != null && isDelete != null) {
-			if(isDelete.equalsIgnoreCase("N"))
+			if(isDelete.equalsIgnoreCase("N")) 
 				srcList = userRepository.findByIsDeleteAndUplineIdOrId(isDelete,uplineId,uplineId,pageable).getContent();
 			else
 				srcList = userRepository.findByIsDeleteAndUplineId(isDelete,uplineId,pageable).getContent();
