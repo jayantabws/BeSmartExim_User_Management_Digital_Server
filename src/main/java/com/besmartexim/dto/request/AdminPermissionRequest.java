@@ -11,6 +11,7 @@ public class AdminPermissionRequest {
 	private String countries;
 	private String contacts;
 	private String siteSettings;
+	private String userTracker;
 
 	public Long getId() {
 		return id;
@@ -82,6 +83,14 @@ public class AdminPermissionRequest {
 
 	public void setSiteSettings(String siteSettings) {
 		this.siteSettings = siteSettings;
+	}
+
+	public String getUserTracker() {
+		return userTracker;
+	}
+
+	public void setUserTracker(String userTracker) {
+		this.userTracker = userTracker;
 	}
 
 }

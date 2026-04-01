@@ -1161,7 +1161,9 @@ public class UserManagementService {
 				permission.setContacts(request.getContacts());
 			if (null != request.getSiteSettings())
 				permission.setSiteSettings(request.getSiteSettings());
-
+			if (null != request.getUserTracker())
+				permission.setUserTracker(request.getUserTracker());
+			
 			permission.setModifiedDate(new Date());
 			permission.setModifiedBy(accessedBy);
 			permission = permissionRepo.save(permission);
