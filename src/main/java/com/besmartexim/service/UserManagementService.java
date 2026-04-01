@@ -1199,11 +1199,16 @@ public class UserManagementService {
 		List<User> srcList = null;
 
 		if (uplineId != null && isDelete != null) {
-			if(isDelete.equalsIgnoreCase("N")) 
+			if(isDelete.equalsIgnoreCase("N")) {
+				pageable = PageRequest.of(pageNumber, 20, Sort.by("uplineId").ascending());
 				srcList = userRepository.findByIsDeleteAndUplineIdOrId(isDelete,uplineId,uplineId,pageable).getContent();
-			else
+			}
+			else {
+				pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 				srcList = userRepository.findByIsDeleteAndUplineId(isDelete,uplineId,pageable).getContent();
+			}
 		} else {
+			pageable = PageRequest.of(pageNumber, 20, Sort.by("id").descending());
 			srcList = userRepository.findByUplineId(uplineId, pageable).getContent();
 		}
 
