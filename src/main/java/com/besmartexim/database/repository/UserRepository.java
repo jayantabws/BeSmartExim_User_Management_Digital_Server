@@ -40,6 +40,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query(nativeQuery = true, value = "SELECT u.*, us.account_expire_date FROM user_subscription us, users u where u.id = us.user_id and u.is_delete='N' and us.account_expire_date < GETDATE();")
 	public List<User> findAllExpiredUsers();
 	
+	public Page<User> findByIsDeleteAndUplineIdOrId(String isDelete,Long uplineId, Long id, Pageable pageable);
+	
 	public Page<User> findByIsDeleteAndUplineId(String isDelete, Long uplineId, Pageable pageable);
 	
 	public Page<User> findByUplineId(Long uplineId, Pageable pageable);

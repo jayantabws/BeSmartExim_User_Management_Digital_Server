@@ -1199,7 +1199,10 @@ public class UserManagementService {
 		List<User> srcList = null;
 
 		if (uplineId != null && isDelete != null) {
-			srcList = userRepository.findByIsDeleteAndUplineId(isDelete,uplineId,pageable).getContent();
+			if(isDelete.equalsIgnoreCase("N"))
+				srcList = userRepository.findByIsDeleteAndUplineIdOrId(isDelete,uplineId,uplineId,pageable).getContent();
+			else
+				srcList = userRepository.findByIsDeleteAndUplineId(isDelete,uplineId,pageable).getContent();
 		} else {
 			srcList = userRepository.findByUplineId(uplineId, pageable).getContent();
 		}
