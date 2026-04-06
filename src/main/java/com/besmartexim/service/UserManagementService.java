@@ -220,6 +220,7 @@ public class UserManagementService {
 			loginResponse.setPassword(userEntity.getPassword());
 			loginResponse.setLoginId(loginDetailsEntity.getId());
 			loginResponse.setSessionId(loginDetailsEntity.getSessionId());
+			loginResponse.setTermsAndConditions(userEntity.getTermsAndConditions());
 //		}
 		// sendEmail(loginRequest.getEmail());
 		return loginResponse;
@@ -423,6 +424,7 @@ public class UserManagementService {
 				userEntity.setCreatedBy(accessedBy);
 			if (null != memberId)
 				userEntity.setMemberId(memberId);
+			userEntity.setTermsAndConditions(0);
 			userEntity = userRepository.save(userEntity);
 
 			if (userEntity.getUserType().equalsIgnoreCase("ADMIN") && userEntity.getId() > 0) {
@@ -476,6 +478,8 @@ public class UserManagementService {
 				userEntity.setDownloadLimit(request.getDownloadLimit());
 			if (null != request.getMemberId())
 				userEntity.setMemberId(request.getMemberId());
+			if (null != request.getTermsAndConditions())
+				userEntity.setTermsAndConditions(request.getTermsAndConditions());
 			userEntity.setModifiedDate(new Date());
 			userEntity.setModifiedBy(accessedBy);
 			userEntity = userRepository.save(userEntity);

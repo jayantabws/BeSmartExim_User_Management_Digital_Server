@@ -20,6 +20,7 @@ public class LoginResponse {
 	private String sessionId;
 	private String isActive;
 	private Date createdDate;
+	private Integer termsAndConditions;
 	
 	public Long getUserid() {
 		return userid;
@@ -117,8 +118,11 @@ public class LoginResponse {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
-	
-	
-	
+	public Integer getTermsAndConditions() {
+		return termsAndConditions;
+	}
+	public void setTermsAndConditions(Integer termsAndConditions) {
+		this.termsAndConditions = termsAndConditions;
+	}
 	
 }

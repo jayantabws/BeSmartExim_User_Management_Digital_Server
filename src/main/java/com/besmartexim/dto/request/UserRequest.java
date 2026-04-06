@@ -31,6 +31,8 @@ public class UserRequest {
 	private String isDelete;
 	
 	private Long memberId;
+	
+	private Integer termsAndConditions;
 
 	public String getFirstname() {
 		return firstname;
@@ -135,8 +137,13 @@ public class UserRequest {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
-	
-	
-	
+
+	public Integer getTermsAndConditions() {
+		return termsAndConditions;
+	}
+
+	public void setTermsAndConditions(Integer termsAndConditions) {
+		this.termsAndConditions = termsAndConditions;
+	}
 
 }

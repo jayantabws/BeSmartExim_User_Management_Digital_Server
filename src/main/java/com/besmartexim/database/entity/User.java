@@ -64,6 +64,9 @@ public class User {
 	
 	@Column(name = "member_id")
 	private Long memberId;
+	
+	@Column(name = "terms_and_conditions")
+	private Integer termsAndConditions;
 
 	public Long getId() {
 		return id;
@@ -199,9 +202,14 @@ public class User {
 
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
-	}	
-	
-	
-	
+	}
+
+	public Integer getTermsAndConditions() {
+		return termsAndConditions;
+	}
+
+	public void setTermsAndConditions(Integer termsAndConditions) {
+		this.termsAndConditions = termsAndConditions;
+	}
 
 }
