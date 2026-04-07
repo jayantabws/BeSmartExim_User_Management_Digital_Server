@@ -9,7 +9,7 @@ public class LoginResponse {
 	private String lastname;
 	private String email;
 	private String mobile;
-	private String password;
+//	private String password;
 	private String companyName;
 	private Long uplineId;
 	private Long downloadLimit;
@@ -51,12 +51,6 @@ public class LoginResponse {
 	}
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getCompanyName() {
 		return companyName;
