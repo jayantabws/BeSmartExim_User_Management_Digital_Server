@@ -217,7 +217,7 @@ public class UserManagementService {
 			loginResponse.setDownloadLimit(userEntity.getDownloadLimit());
 			loginResponse.setIsActive(userEntity.getIsActive());
 			loginResponse.setCreatedDate(userEntity.getCreatedDate());
-			loginResponse.setPassword(userEntity.getPassword());
+//			loginResponse.setPassword(userEntity.getPassword());
 			loginResponse.setLoginId(loginDetailsEntity.getId());
 			loginResponse.setSessionId(loginDetailsEntity.getSessionId());
 			loginResponse.setTermsAndConditions(userEntity.getTermsAndConditions());
@@ -528,7 +528,7 @@ public class UserManagementService {
 			userDetailsResponse.setLastname(userEntity.getLastname());
 			userDetailsResponse.setEmail(userEntity.getEmail());
 			userDetailsResponse.setMobile(userEntity.getMobile());
-			userDetailsResponse.setPassword(userEntity.getPassword());
+//			userDetailsResponse.setPassword(userEntity.getPassword());
 			userDetailsResponse.setCompanyName(userEntity.getCompanyName());
 			userDetailsResponse.setUplineId(userEntity.getUplineId());
 			userDetailsResponse.setIsActive(userEntity.getIsActive());
